@@ -1,15 +1,19 @@
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { signInFailure, signInStart, signInSuccess } from "../redux/user/userSlice";
+import {
+  signInFailure,
+  signInStart,
+  signInSuccess,
+} from "../redux/user/userSlice";
 import { useDispatch, useSelector } from "react-redux";
+import OAuth from "../components/OAuth";
 
 const SignIn = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch()
-  const {loading, error: errorMessage} = useSelector(state => state.user)
+  const dispatch = useDispatch();
+  const { loading, error: errorMessage } = useSelector((state) => state.user);
   const [formData, setFormData] = useState({});
-
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
@@ -18,28 +22,26 @@ const SignIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.email || !formData.password) {
-      return dispatch(signInFailure('Please fill out all the fields'))
+      return dispatch(signInFailure("Please fill out all the fields"));
     }
     try {
-      dispatch(signInStart())
+      dispatch(signInStart());
       const res = await fetch("/api/auth/signin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
       const data = await res.json();
-      
-      if (data.success === false) {
-        dispatch(signInFailure(data.message))
+
+      if (!res.ok) {
+        dispatch(signInFailure(data.message || "Signin failed"));
+        return;
       }
-      
-      if(res.ok){
-        dispatch(signInSuccess(data))
-        navigate("/");
-      }
+
+      dispatch(signInSuccess(data));
+      navigate("/");
     } catch (error) {
-      dispatch(signInFailure(error.message))
-      
+      dispatch(signInFailure(error.message));
     }
   };
 
@@ -81,7 +83,7 @@ const SignIn = () => {
             <Button
               gradientDuoTone="purpleToPink"
               type="submit"
-              disabled={loading}
+              // disabled={loading}
             >
               {loading ? (
                 <>
@@ -92,6 +94,7 @@ const SignIn = () => {
                 "Sign In"
               )}
             </Button>
+            <OAuth />
           </form>
           <div className="flex gap-2 text-sm mt-5">
             <span>Have an account?</span>

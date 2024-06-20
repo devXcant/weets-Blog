@@ -7,6 +7,7 @@ import Projects from './pages/Projects'
 import About from './pages/About'
 import Header from './components/Header'
 import Footercom from './components/Footer'
+import PrivateRoutes from './components/PrivateRoutes'
 
 const App = () => {
   return (
@@ -18,6 +19,7 @@ const App = () => {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/dashboard" element={<PrivateRoutes />} />
         <Route path="/projects" element={<Projects />} />
       </Routes>
       <Footercom />
